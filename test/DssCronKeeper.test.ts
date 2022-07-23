@@ -1,3 +1,4 @@
+import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { expect } from "chai";
 import { ethers } from "hardhat";
 import {
@@ -96,6 +97,28 @@ describe("DssCronKeeper", function () {
         (e) => e.address === topUpMock.address
       );
       expect(topUpEvent).to.not.equal(undefined);
+    });
+  });
+
+  describe("Owner", async function () {
+    let owner: SignerWithAddress;
+    let user: SignerWithAddress;
+
+    beforeEach(async function () {
+      [owner, user] = await ethers.getSigners();
+    });
+
+    it("should allow owner to change network name", async function () {
+      const oldNetwork = await keeper.network();
+      await keeper.connect(owner).setNetworkName(formatBytes32String("test3"));
+      const newNetwork = await keeper.network();
+      expect(newNetwork).to.not.equal(oldNetwork);
+    });
+
+    it("should not allow user to change network name", async function () {
+      await expect(
+        keeper.connect(user).setNetworkName(formatBytes32String("test3"))
+      ).to.be.revertedWith("Ownable: caller is not the owner");
     });
   });
 });
