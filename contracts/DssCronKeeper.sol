@@ -95,4 +95,8 @@ contract DssCronKeeper is KeeperCompatibleInterface, Ownable {
     function setUpkeepRefunder(address _upkeepRefunder) external onlyOwner {
         upkeepRefunder = IUpkeepRefunder(_upkeepRefunder);
     }
+
+    function setNetworkName(bytes32 _network) external onlyOwner{
+        network = _network;
+    }
 }
