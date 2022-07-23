@@ -97,5 +97,12 @@ describe("DssCronKeeper", function () {
       );
       expect(topUpEvent).to.not.equal(undefined);
     });
+
+    it("should perform event when executing job", async function () {
+      await expect(keeper.performUpkeep(runJobEncoded)).to.emit(
+        keeper,
+        "FinishedJob"
+      );
+    });
   });
 });
