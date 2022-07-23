@@ -108,6 +108,19 @@ describe("DssCronKeeper", function () {
       [owner, user] = await ethers.getSigners();
     });
 
+    it("should allow owner to change sequencer", async function () {
+      const oldSequencer = await keeper.sequencer();
+      await keeper.connect(owner).setSequencer(job.address);
+      const newSequencer = await keeper.sequencer();
+      expect(oldSequencer).to.not.equal(newSequencer);
+    });
+
+    it("should not allow user to change sequencer", async function () {
+      await expect(
+        keeper.connect(user).setSequencer(job.address)
+      ).to.be.revertedWith("Ownable: caller is not the owner");
+    });
+
     it("should allow owner to change network name", async function () {
       const oldNetwork = await keeper.network();
       await keeper.connect(owner).setNetworkName(formatBytes32String("test3"));
